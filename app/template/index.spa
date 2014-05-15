@@ -1,0 +1,56 @@
+!doctype html
+html
+    meta charset=utf-8
+    meta http-equiv=X-UA=Compatitble content=IE-edge
+    meta name=viewport content="width-device-width,initial-scal=1"
+    meta name=description content=$description
+    meta name=keywords content=$keywords
+    title $title
+    link href=css/base.css
+    script src=js/base.js
+    style
+        h1
+            color red
+        h2
+            font-size 2em
+            padding 10px
+            border 1px solid #ccc
+        header
+            div.title
+                font-size bold
+            .note
+                color #c88
+    script
+        Ajax.endpoint "/api/"
+        form
+            signup mail pass = Ajax.signup
+
+        body.onload
+            $message #test.mail.value + "hello"
+            #help.display App.showHelp
+
+body
+    h1 $title
+
+    form#test
+        input type=text name=mail $message
+
+    form#signup method=post action=signup
+        @mail input type=text name=mail
+        @pass input type=password name=password
+
+    form#signin method=post action=signin
+        @mail input type=text name=mail
+        @pass input type=password name=password
+
+    ul % for todo in todos
+        % if todo.isTimeup
+            li.timeup $todo
+        % else if todo.leftDay < 2
+            li.alert $tody
+        % else
+            li $tody
+
+    footer.copyright
+        "<b>2004</b>"
+        @copyright
