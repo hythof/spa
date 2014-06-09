@@ -1,2 +1,3 @@
-help:
-	@echo "under developping"
+test:
+	clear
+	(cd bin/SPA && runghc Test.hs)
