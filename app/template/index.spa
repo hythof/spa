@@ -36,12 +36,12 @@ body
         input type=text name=mail $message
 
     form#signup method=post action=signup
-        @mail input type=text name=mail
-        @pass input type=password name=password
+        $mail input type=text name=mail
+        $pass input type=password name=password
 
     form#signin method=post action=signin
-        @mail input type=text name=mail
-        @pass input type=password name=password
+        $mail input type=text name=mail
+        $pass input type=password name=password
 
     ul % for todo in todos
         % if todo.isTimeup

@@ -18,10 +18,10 @@ parseTree :: Parser (Tree AST)
 parseTree = spaces *> withBlock Node parseAST parseTree
 
 parseAST :: Parser AST
-parseAST = parseRawTag
-       <|> parseVar
-       <|> parseStmt
-       <|> parseTag
+parseAST = parseRawTag -- <html>
+       <|> parseVar    -- $foo
+       <|> parseStmt   -- %if, %for
+       <|> parseTag    -- div, span
 
 parseRawTag :: Parser AST
 parseRawTag = do
@@ -29,20 +29,6 @@ parseRawTag = do
     rawTag <- many1 $ noneOf ">"
     char '>'
     return $ RawTag $ "<" ++ rawTag ++ ">"
-
-parseTag :: Parser AST
-parseTag = do
-    name <- identifier
-    attrs <- many $ try attr
-    spaces
-    return $ Tag name attrs
-  where
-    attr = do
-        char ' '
-        k <- many1 $ noneOf "= \n"
-        char '='
-        v <- identifier
-        return (k, v)
 
 parseVar :: Parser AST
 parseVar = do
@@ -54,6 +40,41 @@ parseVar = do
 parseStmt :: Parser AST
 parseStmt = do
     char '%'
-    name <- many1 $ noneOf "\n"
     spaces
-    return $ Stmt name
+    name <- many1 $ noneOf " "
+    spaces
+    exp <- many1 $ noneOf "\n"
+    spaces
+    return $ Stmt name exp
+
+parseTag :: Parser AST
+parseTag = do
+    name <- tagName
+    css_ids <- many $ css_id
+    css_classes <- many $ css_classes
+    attrs <- many $ try attr
+    spaces
+    return $ Tag name (css_ids ++ css_classes ++ attrs)
+  where
+    tagName = many1 $ noneOf " .#\n"
+    css_id = do
+        char '#'
+        id_ <- many1 $ noneOf " .#\n"
+        return ("id", id_)
+    css_classes = do
+        classes <- many1 $ css_class
+        return ("class", join classes)
+      where
+        join [] = ""
+        join [x] = x
+        join (x:xs) = x ++ " " ++ (join xs)
+        css_class = do
+            char '.'
+            class_name <- many1 $ noneOf " .#\n"
+            return class_name
+    attr = do
+        char ' '
+        k <- many1 $ noneOf "= \n"
+        char '='
+        v <- identifier
+        return (k, v)

@@ -3,8 +3,7 @@
 
 ## 構成
 + app
-  + app/static   # 静的ファイル、staticサーバへdeploy
-  + app/api      # APIサーバ、appサーバへdeploy
+  + app/static   # 静的ファイル
   + app/template # このフォルダの html, js, css はコンパイルされ app/static へ配置される
 + bin            # 開発支援ツール
 + misc           # エィターのsyntaxなど

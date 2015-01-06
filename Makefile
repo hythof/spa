@@ -1,3 +1,6 @@
+help:
+	@echo "make test" # show under developing
+
 test:
 	clear
-	(cd bin/SPA && runghc Test.hs)
+	(cd bin/spa && runghc test/ParseTest.hs)
