@@ -3,7 +3,6 @@ module Main where
 import Data.Tree (Tree (..))
 import AST
 import Parse (parseText)
-import Build (buildHtml)
 import Test.HUnit
 
 ast :: AST -> String -> Test
@@ -30,15 +29,16 @@ testTag = test [
       , ast (Tag "div" [("class", "a")]) "div.a"
       , ast (Tag "div" [("class", "a b")]) "div.a.b"
       , ast (Tag "div" [("onclick", "alert(1)")]) "div onclick=alert(1)"
+      , ast (Tag "div" [("data-length", "a b")]) "div data-length=\"a b\""
       , ast (Tag "div" [("id", "a"), ("class", "b")]) "div#a.b"
       , ast (Tag "div" [("id", "a"), ("class", "b"), ("onclick", "alert(1)")]) "div#a.b onclick=alert(1)"
     ]
 
 testStmt = test [
-        tree (Node (Stmt "if" "exp") []) "%if exp"
-      , tree (Node (Stmt "if" "a==a") []) "% if a==a"
-      , tree (Node (Stmt "for" "item = items") []) "%for item = items"
-      , tree (Node (Stmt "for" "item = items") [
+        tree (Node (Stmt "if exp") []) "%if exp"
+      , tree (Node (Stmt "if a==a") []) "% if a==a"
+      , tree (Node (Stmt "for item = items") []) "%for item = items"
+      , tree (Node (Stmt "for item = items") [
             Node (Tag "div" []) [
                 Node (Var "item") []
             ]
@@ -56,15 +56,17 @@ testLines = test [
                     Node {rootLabel = Tag "body" [], subForest = [
                         Node {rootLabel = Tag "h1" [], subForest = [
                             Node {rootLabel = Var "title", subForest = []}]},
-                        Node {rootLabel = Stmt "for" "todo in todos", subForest = [
+                        Node {rootLabel = Stmt "for todo in todos", subForest = [
                             Node {rootLabel = Tag "ul" [], subForest = [
-                                Node {rootLabel = Stmt "if" "todo.isTimeup", subForest = [
+                                Node {rootLabel = Stmt "if todo.isTimeup", subForest = [
                                     Node {rootLabel = Tag "li" [("class","timeup")], subForest = [
                                         Node {rootLabel = Var "todo", subForest = []}]}]},
-                                Node {rootLabel = Stmt "else" "if todo.leftDay < 2", subForest = [
+                                Node {rootLabel = Stmt "else if todo.leftDay < 2", subForest = [
                                     Node {rootLabel = Tag "li" [("class","alert")], subForest = [
                                         Node {rootLabel = Var "tody", subForest = []}]}]},
-                                Node {rootLabel = Stmt "else\n" "li $tody", subForest = []}]}]},
+                                Node {rootLabel = Stmt "else", subForest = [
+                                    Node {rootLabel = Tag "li" [], subForest = [
+                                        Node {rootLabel = Var "tody", subForest = []}]}]}]}]},
                         Node {rootLabel = Tag "footer" [("class","copyright center note")], subForest = [
                             Node {rootLabel = Var "copyright", subForest = []}]}
                         ]}]}]}

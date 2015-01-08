@@ -41,11 +41,9 @@ parseStmt :: Parser AST
 parseStmt = do
     char '%'
     spaces
-    name <- many1 $ noneOf " "
+    stmt <- many1 $ noneOf "\n"
     spaces
-    exp <- many1 $ noneOf "\n"
-    spaces
-    return $ Stmt name exp
+    return $ Stmt stmt
 
 parseTag :: Parser AST
 parseTag = do
@@ -76,5 +74,11 @@ parseTag = do
         char ' '
         k <- many1 $ noneOf "= \n"
         char '='
-        v <- identifier
+        v <- quoted_value <|> identifier
         return (k, v)
+
+    quoted_value = do
+        char '"'
+        k <- many1 $ noneOf "\""
+        char '"'
+        return k
