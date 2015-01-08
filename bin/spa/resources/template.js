@@ -1,52 +1,51 @@
-var var_template = document.createDocumentFragment("span");
-var template = {};
-var env = {};
-var dom = {};
+function(window_) {
 
-function createHtml(tag, attrs, inners) {
-    var node = document.createDocumentFragment(tag);
-    var len_attr = attrs.length;
-    for(var i=0; i<len_attr; ++i)
-    {
-        var kv = attrs[i];
-        t.setAttribute(kv[0], kv[1]);
-    }
-    var len_inner = inners.length;
-    for(var i=0; i<len_inner; ++i)
-    {
-        var x = inners[i];
-        node.appendChild(createHtml(x[0], x[1], x[2]));
-    }
-    return function(env) {
-        return node;
-    }
-}
-
-function createVar(name) {
-    return function(env, me) {
-        if(me.textContent) {
-            me.textContent = env[name];
-        } else {
-            me.innerText = env[name];
-        }
-    }
-}
-
-function createIf(name) {
-    return function(env, me) {
-        me.style.display = env[name] ? "block" : "none";
-    }
-}
-
-function createFor(name) {
-    return function(env, me) {
-        var xs = env[name];
-        var len = xs.length;
-        var nodes = document.createDocumentFragment("div");
+var spa = {
+    _var: {},
+    _dom: {},
+    _render: {},
+    init: function() {
+        var elements = document.getElementsByTagName("span");
+        var len = elements.length;
+        var dom = {};
         for(var i=0; i<len; ++i) {
-            var x = xs[i];
-            var node = x.node.cloneNode(true);
-            nodes.appendChild(node.cloneNode(true));
+            var e = elements[i];
+            var name = e.dataset.spa;
+            if(name) {
+                if(dom[name]) {
+                    var doms = dom[name];
+                    doms[doms.length] = e;
+                } else {
+                    dom[name] = [e];
+                }
+            }
+        }
+
+        // update this
+        this._var = {};
+        this._dom = dom;
+        this._render = {};
+    },
+    update: function(vars) {
+        var dom = this._dom;
+        var render = this._render;
+        for(var name in vars) {
+            this._var[name] = vars[name];
+
+            var func = render[name];
+            var doms = dom[name];
+            if(func && doms) {
+                var len = doms.length;
+                var html = func();
+                for(var i=0; i<len; ++i) {
+                    doms[i].innerHTML = html;
+                }
+            }
         }
     }
-}
+};
+
+// effects global
+window_.addEventListener("load", function(){ spa.init(); });
+window_.spa = spa;
+}(window);
