@@ -26,8 +26,8 @@ testRawTag = test [
     ]
 
 testVar = test [
-        html "<span id=spa_name></span>" "$name"
-      , js "ids.name = {};" "$name"
+        html "<span data-spa=name></span>" "$name"
+      , js "vars.name = {};" "$name"
     ]
 
 testTag = test [
@@ -41,9 +41,9 @@ testTag = test [
     ]
 
 testStmt = test [
-        html "<span id=spa_if_exp></span>" "%if exp"
-      , html "<span id=spa_for_a___b></span>" "%for a = b"
-      , js "ids.if_exp = {};\nrenders.if_exp = function(){var html=\"\";return html;};" "%if exp"
+        html "<span data-spa=if_exp></span>" "%if exp"
+      , html "<span data-spa=for_a___b></span>" "%for a = b"
+      , js "vars.if_exp = {};\nrenders.if_exp = function(){var html=\"\";return html;};" "%if exp"
     ]
 
 testLines = test [
@@ -59,16 +59,16 @@ testLines = test [
           , "  <head>"
           , "    <meta charset=utf-8>"
           , "    <title>"
-          , "      <span id=spa_title></span>"
+          , "      <span data-spa=title></span>"
           , "    </title>"
           , "  </head>"
           , "  <body>"
           , "    <h1>"
-          , "      <span id=spa_title></span>"
+          , "      <span data-spa=title></span>"
           , "    </h1>"
-          , "    <span id=spa_for_todo___todos></span>"
+          , "    <span data-spa=for_todo___todos></span>"
           , "    <footer class=\"copyright center note\">"
-          , "      <span id=spa_copyright></span>"
+          , "      <span data-spa=copyright></span>"
           , "    </footer>"
           , "  </body>"
           , "</html>"

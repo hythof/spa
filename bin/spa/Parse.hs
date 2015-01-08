@@ -1,4 +1,6 @@
-module Parse where
+module Parse(
+    parseText
+) where
 
 import Control.Applicative ( (*>), (<|>), (<$>) )
 import Data.Tree (Tree (..))
