@@ -24,7 +24,7 @@ var spa = {
         // update this
         this._var = {};
         this._dom = dom;
-        this._render = {};
+        this._render = {}; // setup on html
     },
     update: function(vars) {
         var dom = this._dom;

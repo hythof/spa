@@ -1,19 +1,19 @@
 module Main where
 
 import Data.Tree (Tree (..))
-import AST
-import Parse (parseText)
 import Test.HUnit
 
-ast :: AST -> String -> Test
-ast expect input = tree (Node expect []) input
+import AST
+import Parse (parseText)
 
-tree :: Tree AST -> String -> Test
-tree expect input = 
-    case (parseText input) of
-        Right x -> x ~?= expect
-        Left x -> error $ (show x)  ++ " expect=" ++ (show expect) ++ " input=" ++ input
+main = do
+    runTestTT testRawTag
+    runTestTT testVar
+    runTestTT testTag
+    runTestTT testStmt
+    runTestTT testLines
 
+-- tests
 testRawTag = test [
         ast (RawTag "<div>") "<div>" 
       , ast (RawTag "<div class=foo>") "<div class=foo>" 
@@ -92,9 +92,12 @@ testLines = test [
             , "        footer.copyright.center.note $copyright"
         ]
 
-main = do
-    runTestTT testRawTag
-    runTestTT testVar
-    runTestTT testTag
-    runTestTT testStmt
-    runTestTT testLines
+-- utility
+ast :: AST -> String -> Test
+ast expect input = tree (Node expect []) input
+
+tree :: Tree AST -> String -> Test
+tree expect input = 
+    case (parseText input) of
+        Right x -> x ~?= Node Root [expect]
+        Left x -> error $ (show x)  ++ " expect=" ++ (show expect) ++ " input=" ++ input

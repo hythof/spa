@@ -7,6 +7,7 @@ import Data.Tree (Tree (..))
 import Text.Parsec (many, many1, letter, try, option, spaces, char, oneOf, noneOf, sepBy, runParserT)
 import Text.Parsec.Error (ParseError)
 import Text.Parsec.Indent (withBlock, runIndent, IndentParser(..))
+
 import AST
 
 type Parser a = IndentParser String () a
@@ -14,7 +15,10 @@ type Parser a = IndentParser String () a
 identifier = many1 $ noneOf " \n"
 
 parseText :: String -> Either ParseError (Tree AST)
-parseText input = runIndent "" $ runParserT parseTree () "" input
+parseText input = runIndent "" $ runParserT (parseRoot) () "" input
+
+parseRoot :: Parser (Tree AST)
+parseRoot = Node Root <$> many parseTree
 
 parseTree :: Parser (Tree AST)
 parseTree = spaces *> withBlock Node parseAST parseTree
@@ -78,7 +82,6 @@ parseTag = do
         char '='
         v <- quoted_value <|> identifier
         return (k, v)
-
     quoted_value = do
         char '"'
         k <- many1 $ noneOf "\""

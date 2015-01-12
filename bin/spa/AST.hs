@@ -1,6 +1,6 @@
 module AST where
 
-data AST = Empty
+data AST = Root
     | RawTag String
     | Tag String [(String, String)]
     | Var String

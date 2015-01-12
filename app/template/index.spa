@@ -2,9 +2,9 @@
 html
     meta charset=utf-8
     meta http-equiv=X-UA=Compatitble content=IE-edge
-    meta name=viewport content="width-device-width,initial-scal=1"
-    meta name=description content=$description
-    meta name=keywords content=$keywords
+    meta viewport="width-device-width,initial-scal=1"
+    meta description=$description
+    meta keywords=$keywords
     title $title
     link href=css/base.css
     script src=js/base.js
@@ -43,13 +43,10 @@ body
         $mail input type=text name=mail
         $pass input type=password name=password
 
-    ul % for todo in todos
-        % if todo.isTimeup
-            li.timeup $todo
-        % else if todo.leftDay < 2
-            li.alert $tody
-        % else
-            li $tody
+    % if todos
+        ul
+            % for todo in todos
+                li $todo.title
 
     footer.copyright
         "<b>2004</b>"
