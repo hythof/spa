@@ -1,3 +1,6 @@
+build:
+	(cd bin/spa && runghc Main.hs ../../deploy/ ../../app/index.spa)
+
 help:
 	@echo "make test" # show under developing
 

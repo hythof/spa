@@ -147,15 +147,15 @@ is_quoted :: String -> Bool
 is_quoted [] = False
 is_quoted [x] = False
 is_quoted (x:xs) = ('"'  == x && '"'  == (xs !! ((length xs) - 1)))
-            || ('\'' == x && '\'' == (xs !! ((length xs) - 1)))
+                || ('\'' == x && '\'' == (xs !! ((length xs) - 1)))
 
 is_need_quote :: String -> Bool
 is_need_quote s = (not $ is_quoted s) && has_need_quote s
 
 has_need_quote :: String -> Bool
 has_need_quote s = (elem '"' s)
-           || (elem '\'' s)
-           || (elem ' ' s)
-           || (elem '>' s)
-           || (elem '<' s)
-           || (elem '=' s)
+                || (elem '\'' s)
+                || (elem ' ' s)
+                || (elem '>' s)
+                || (elem '<' s)
+                || (elem '=' s)
