@@ -1,0 +1,56 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+html, body {
+    font-size: 90%;
+    height: 100%;
+}
+br.clear {
+    clear: both;
+    height: 0;
+    width: 0;
+}
+ul {
+    list-style-type: none;
+}
+ul.horizon {
+    clear: both;
+}
+ul.horizon li {
+    float: left;
+}
+li a {
+    display: block;
+    color: #000;
+    text-decoration: none;
+}
+li a:hover {
+    color: #42A5F5;
+    text-decoration: under-line;
+}
+#outline {
+    width: 1000px;
+    height: 100%;
+}
+#sidebar {
+    background: #FAFAFA;
+    height: 100%;
+    width: 200px;
+    float: left;
+}
+#sidebar .wrap {
+    padding: 10px 7px 5px;
+    border-right: solid 2px #F5F5F5;
+}
+#sidebar a {
+    width: 100%;
+    padding: 10px 0;
+}
+#content {
+    width: 800px;
+    float: left;
+}
+#content .wrap {
+    padding: 10px;
+}

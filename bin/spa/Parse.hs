@@ -4,9 +4,11 @@ module Parse(
 
 import Control.Applicative ( (*>), (<|>), (<$>) )
 import Data.Tree (Tree (..))
-import Text.Parsec (many, many1, letter, try, option, spaces, char, oneOf, noneOf, sepBy, runParserT)
+import Data.Char (toUpper)
+import Text.Parsec (many, many1, letter, try, option, spaces, char, oneOf, noneOf, sepBy, runParserT, lookAhead)
 import Text.Parsec.Error (ParseError)
 import Text.Parsec.Indent (withBlock, runIndent, IndentParser(..))
+import Debug.Trace (trace)
 
 import AST
 
@@ -24,10 +26,11 @@ parseTree :: Parser (Tree AST)
 parseTree = spaces *> withBlock Node parseAST parseTree
 
 parseAST :: Parser AST
-parseAST = parseRawTag -- <html>
-       <|> parseVar    -- $foo
-       <|> parseStmt   -- %if, %for
-       <|> parseTag    -- div, span
+parseAST = parseRawTag   -- <html>
+       <|> parseVar      -- $foo
+       <|> parseConst    -- @bar
+       <|> parseJs       -- :func-arg1-arg2
+       <|> parseTag      -- div, span
 
 parseRawTag :: Parser AST
 parseRawTag = do
@@ -43,17 +46,39 @@ parseVar = do
     spaces
     return $ Var name
 
-parseStmt :: Parser AST
-parseStmt = do
-    char '%'
+parseConst :: Parser AST
+parseConst = do
+    char '@'
+    name <- identifier
     spaces
-    stmt <- many1 $ noneOf "\n"
+    return $ Const name
+
+--parseStmt :: Parser AST
+--parseStmt = do
+--    char '%'
+--    spaces
+--    stmt <- many1 $ noneOf "\n"
+--    spaces
+--    return $ Stmt stmt
+
+parseJs :: Parser AST
+parseJs = do
+    char ':'
     spaces
-    return $ Stmt stmt
+    (func:args) <- sepBy (many1 $ noneOf " -") (char '-')
+    spaces
+    let arg = join "," $ map arg_convert args
+    return $ Tag "a" [
+            ("href", "#"),
+            ("onclick", "return " ++ func ++ "(" ++ arg ++ ")")
+        ]
+  where
+    arg_convert ('$':prefix:name) = "this.dataset.spaValue" ++ [toUpper prefix] ++ name
+    arg_convert x = "'" ++ x ++ "'"
 
 parseTag :: Parser AST
 parseTag = do
-    name <- tagName
+    name <- tagName <|> lookAhead (oneOf ".#" >> return "div")
     css_ids <- many $ css_id
     css_classes <- many $ css_classes
     attrs <- many $ try attr
@@ -67,11 +92,8 @@ parseTag = do
         return ("id", id_)
     css_classes = do
         classes <- many1 $ css_class
-        return ("class", join classes)
+        return ("class", join " " classes)
       where
-        join [] = ""
-        join [x] = x
-        join (x:xs) = x ++ " " ++ (join xs)
         css_class = do
             char '.'
             class_name <- many1 $ noneOf " .#\n"
@@ -81,9 +103,18 @@ parseTag = do
         k <- many1 $ noneOf "= \n"
         char '='
         v <- quoted_value <|> identifier
-        return (k, v)
+        return $ conv k v
+      where
+        conv "if" v = ("data-spa-if", v)
+        conv "for" v = ("data-spa-for", v)
+        conv k v = (k, v)
     quoted_value = do
         char '"'
         k <- many1 $ noneOf "\""
         char '"'
         return k
+
+join :: String -> [String] -> String
+join sep [] = ""
+join sep [x] = x
+join sep (x:xs) = x ++ sep ++ (join sep xs)

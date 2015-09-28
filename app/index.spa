@@ -3,27 +3,36 @@ html lang=ja
     head
         meta charset=utf-8
         meta http-equiv=X-UA=Compatitble content=IE-edge
-        meta viewport="width-device-width,initial-scal=1"
+        meta viewport=width-device-width,initial-scal=1
+        link rel=stylesheet href=css/style.css
+        script src=js/script.js
         title @title
-
     body
-        h1 $title
-    
-        form#test
-            input type=text name=mail $message
-    
-        form#signup method=post action=signup
-            $mail input type=text name=mail
-            $pass input type=password name=password
-    
-        form#signin method=post action=signin
-            $mail input type=text name=mail
-            $pass input type=password name=password
-    
-        % if todos
-            ul
-                % for todo = todos
-                    li $todo.title
-    
-        footer.copyright
-            &copy;
+        #outline
+            #sidebar
+                .wrap
+                    ul for=page=pages
+                        li onclick=console.log($page) $page.title
+
+            #content
+                .wrap
+                    header
+                        ul.horizon
+                            li onclick=toggle('sidebar') @sidebar
+                            li onclick=toggle('font') @font
+                        br.clear
+                        
+                    h1 $title
+
+                    form#signup method=post action=signup
+                        $mail input type=text name=mail
+                        $pass input type=password name=password
+                        input type=submit value=@signup
+                
+                    form#signin method=post action=signin
+                        $mail input type=text name=mail
+                        $pass input type=password name=password
+                        input type=submit value=@signin
+
+                    footer.copyright
+                        @copy

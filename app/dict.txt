@@ -1,0 +1,25 @@
+title
+    シングルページアプリケーションのデモ
+message
+    手打ちでガリガリ作る人向けのフレームワーク
+copy
+    &copy; 2015
+todo
+    TODO
+signin
+    ログイン
+signup
+    新規登録
+page1
+    ページその1のデモです
+page2
+    ページその2のデモです
+page3
+    ページその3のデモです
+
+sidebar
+    〓
+color
+    C   
+font
+    A

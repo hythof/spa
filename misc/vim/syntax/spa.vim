@@ -30,9 +30,9 @@ hi def link     spaHtmlId           Keyword
 syn match       spaHtmlClass        /\.[^ ]*/
 hi def link     spaHtmlClass        Keyword
 
-" plain text
-syn match       spaPlainText        /:.*/
-hi def link     spaPlainText        Ignore
+" macro
+syn match       spaPlainText        /:[^ ]*/
+hi def link     spaPlainText        Macro
 
 " --- css
 syn match       spaCssTag           /style /
